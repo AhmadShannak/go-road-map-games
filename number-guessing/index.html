@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title> Guess the Number</title>
+  </head>
+  <body>
+    <h2>Number is between:</h2>
+    <br>
+    <p><span id="range" hx-get="/range" hx-trigger="refresh" hx-swap="innerHTML"></span></p>
+
+    <input id="user-input" name="value" type="number">
+    <br><br>
+    <button id="guess" hx-post="/validate" hx-trigger="click" hx-target="#result" hx-include="#user-input">Guess</button>
+    <br><br>
+    <p id="result" hx-swap="innerHTML"></p>
+
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+    <script>
+      document.getElementById("guess").addEventListener("htmx:afterRequest", function(evt){
+        console.log(evt.detail.xhr.responseText);
+        const rangeElement = htmx.find("#range");
+        console.log("Range element:", rangeElement);
+        if (evt.detail.xhr.responseText.includes("You guessed it right!")) {
+          console.log("You guessed it right!");
+          htmx.trigger(rangeElement, "refresh");
+        }
+      });
+    </script>
+  </body>
+</html>
